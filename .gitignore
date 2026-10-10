@@ -1,0 +1,8 @@
+node_modules/
+.tmp/
+data/
+.env
+*.log
+launcher/settings.json
+launcher/.instance.json
+pi-home/
