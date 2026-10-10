@@ -1,0 +1,22 @@
+{
+  "name": "mc-agent-eval",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/main.js",
+    "test": "node --test",
+    "e2e": "node scripts/e2e.mjs",
+    "e2e:brain": "node --env-file=.env scripts/e2e.mjs",
+    "owner-uuid": "node scripts/owner-uuid.mjs",
+    "pi-smoke": "node scripts/pi-smoke.mjs"
+  },
+  "dependencies": {
+    "@earendil-works/pi-ai": "1.0.0",
+    "mineflayer": "4.39.0",
+    "mineflayer-pathfinder": "2.4.5"
+  }
+}
