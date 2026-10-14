@@ -1,8 +1,8 @@
 # mc-agent-eval
 
-An LLM-driven agent for Minecraft, built together with an **offline evaluation harness** for measuring how well language models can compose low-level game actions into working skills.
+An LLM-driven agent for Minecraft, built together with an **offline evaluation harness** for measuring how well language models compose low-level game actions into working skills.
 
-Minecraft serves as the testbed. The project is mostly about two questions: how to build an agent whose language model never claims to have done something it did not do, and how to evaluate that agent on tasks it has not seen before.
+Minecraft serves as the testbed for two practical problems: keeping an in-game agent's dialogue strictly tied to actions that actually executed in the world, and evaluating skill synthesis on held-out and procedurally generated task sets without benchmark leakage.
 
 > Status: work in progress (about 80% of the planned scope). Interfaces may still change.
 
@@ -19,10 +19,10 @@ Minecraft serves as the testbed. The project is mostly about two questions: how 
 
 ## Agent design
 
-- **Two layers.** A rule-based decision layer reacts to the game state, and the LLM layer handles open-ended dialogue, learning from the player and choosing between conflicting goals. The game keeps working without a model; without one, the agent only reports plain facts.
-- **Grounded speech.** The model may only describe actions that actually happened. A skill counts as "learned" only after a successful trial, and the origin of every skill (built in, self-learned, taught by the player) is tracked and checked before it is mentioned.
-- **Constrained arbitration.** When goals conflict, the model may only choose from an allowed list of policies within fixed parameter ranges, and it falls back to the most conservative choice when unsure.
-- **Robust model access.** Per-call deadlines, ordered fallback models on 429/5xx/network errors, and logging that records timing and model metadata but never credentials, prompts or generated text.
+- **Planner (`src/brain/`) vs. reactive body (`src/bot.js`).** A rule-based loop handles immediate survival and movement, while the LLM layer handles open-ended dialogue, player teaching, and goal conflicts. If the model is offline, the bot continues running and reports plain state facts.
+- **Execution-verified dialogue & skill tracking.** A skill is marked as learned only after a successful in-world trial, and its provenance (built-in, self-learned, or player-taught) is verified before the dialogue layer can reference it.
+- **Policy-bounded conflict arbitration.** When survival and player instructions conflict, the model selects from a fixed whitelist of policies and parameter bounds, defaulting to the most conservative option on invalid or uncertain output.
+- **Provider fallback & clean telemetry.** Calls enforce per-request deadlines with ordered fallback across OpenAI-compatible and Gemini endpoints on 429/5xx errors, logging latency and model metadata without recording credentials or raw prompts.
 
 ## Evaluation harness
 
